@@ -1,13 +1,73 @@
 import React, { useCallback, useState } from "react";
-import { Button, Container, Form } from "react-bootstrap";
+import { Button, Container, Form, Spinner } from "react-bootstrap";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import "./styles.css";
-const NewBlogPost = props => {
+import { toast } from "react-toastify";
+
+const NewBlogPost = (props) => {
   const [text, setText] = useState("");
-  const handleChange = useCallback(value => {
+  const [blog, setBlog] = useState();
+  const [loading, setLoading] = useState(false);
+  const [title, setTitle] = useState("");
+  const [idAuthor, setIdAuthor] = useState("");
+  const [category, setCategory] = useState("");
+  const [readTime, setReadTime] = useState("");
+  const [createdAt, setcreatedAt] = useState("");
+
+  const handleChange = useCallback((value) => {
     setText(value);
   });
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setLoading(true);
+    const formData = {
+      category: category,
+      title: title,
+      content: text,
+      readTime: {
+        value: readTime,
+      },
+      author: {
+        _id: idAuthor,
+      },
+      createdAt: createdAt,      
+    };
+
+    try {
+      fetch("http://localhost:3000/api/blogPosts/", {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        method: "POST",
+        body: JSON.stringify(formData),
+        // cover,
+      })
+        .then(function (response) {
+          if (response.ok) {
+            toast.success("Comment saved successfully!", {
+              position: toast.POSITION.BOTTOM_RIGHT,
+            });
+          } else {
+            // toast.error("Something went wrong!", {
+            //   position: toast.POSITION.TOP_LEFT,
+            // });
+            throw new Error(`HTTP error! Status: ${response.status}`);
+          }
+        })
+
+        .then(setBlog(formData))
+        .finally(() => {
+          setLoading(false);
+        });
+    } catch (error) {
+      console.log("Error fetching data:", error);
+    }
+  };
+
+
+
   return (
     <Container className="new-blog-container">
       <Form className="mt-5">
