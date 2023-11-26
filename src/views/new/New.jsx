@@ -128,7 +128,10 @@ const NewBlogPost = (props) => {
           <ReactQuill value={text} onChange={handleChange} className="new-blog-content" />
         </Form.Group>
         <Form.Group className="d-flex mt-3 justify-content-end">
-          <Button type="reset" size="lg" variant="outline-dark">
+          <Button
+            type="reset"
+            size="lg"
+            variant="outline-dark">
             Reset
           </Button>
           <Button
