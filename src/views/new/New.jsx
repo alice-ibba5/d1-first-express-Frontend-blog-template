@@ -1,66 +1,74 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useState, useEffect } from "react";
 import { Button, Container, Form, Spinner } from "react-bootstrap";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import "./styles.css";
-//import { toast } from "react-toastify";
+//import { ToastContainer, toast } from 'react-toastify'
 
-const NewBlogPost = (props) => {
+const NewBlogPost = ({ blogPosts, setblogPosts }) => {
   const [text, setText] = useState("");
-  const [blog, setBlog] = useState();
   const [loading, setLoading] = useState(false);
-  const [title, setTitle] = useState("");
-  const [idAuthor, setIdAuthor] = useState("");
-  const [category, setCategory] = useState("");
-  const [readTime, setReadTime] = useState("");
-  const [createdAt, setcreatedAt] = useState("");
+
+  const [blogPost, setblogPost] = useState({
+    category: "",
+    title: "",
+    content: "",
+    readTime: {
+      valore: "",
+    },
+    author: {
+      _id: "",
+    },
+    createdAt: "",
+  });
+
+  useEffect(() => {
+    setblogPost((c) => ({
+      ...c,
+    }));
+  }, []);
 
   const handleChange = useCallback((value) => {
     setText(value);
   });
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    const formData = {
-      category: category,
-      title: title,
-      content: text,
-      readTime: {
-        value: readTime,
-      },
-      author: {
-        _id: idAuthor,
-      },
-      createdAt: createdAt,
-    };
 
     try {
-      fetch("http://localhost:3000/api/blogPosts", {
+      let response = await fetch("http://localhost:3000/api/blogPosts", { mode: 'cors' }, {
         headers: {
           "Content-Type": "application/json",
         },
         method: "POST",
-        body: JSON.stringify(formData),
+        body: JSON.stringify(blogPost),
         // cover,
       })
-        .then(function (response) {
-          if (response.ok) {
-            //toast.success("Comment saved successfully!", {
-            // position: toast.POSITION.BOTTOM_RIGHT,
-            //});
-          } else {
-            // toast.error("Something went wrong!", {
-            //   position: toast.POSITION.TOP_LEFT,
-            // });
-            throw new Error(`HTTP error! Status: ${response.status}`);
-          }
-        })
 
-        .then(setBlog(formData))
-        .finally(() => {
-          setLoading(false);
-        });
+      if (response.ok) {
+        // toast.success("Post aggiunto!", {
+        //  position: toast.POSITION.BOTTOM_RIGHT,
+        //});
+        setblogPost({
+          category: "",
+          title: "",
+          content: "",
+          readTime: {
+            valore: "",
+          },
+          author: {
+            _id: "",
+          },
+          createdAt: "",
+        })
+      } else {
+        //toast.error("Something went wrong!", {
+        // position: toast.POSITION.TOP_LEFT,
+        //});
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
     } catch (error) {
       console.log("Error fetching data:", error);
     }
@@ -81,8 +89,13 @@ const NewBlogPost = (props) => {
             size="lg"
             placeholder="Title"
             required
-            value={title}
-            onChange={(e) => setTitle(e.target.value)} />
+            value={blogPost.title}
+            onChange={(e) =>
+              setblogPost({
+                ...blogPost,
+                title: e.target.value
+              })
+            } />
         </Form.Group>
 
         <Form.Group controlId="blog-form" className="mt-3">
@@ -91,8 +104,13 @@ const NewBlogPost = (props) => {
             size="lg"
             placeholder="2348762397429"
             required
-            value={idAuthor}
-            onChange={(e) => setIdAuthor(e.target.value)}
+            value={blogPost._id}
+            onChange={(e) =>
+              setblogPost({
+                ...blogPost,
+                _id: e.target.value
+              })
+            }
           />
         </Form.Group>
 
@@ -102,8 +120,13 @@ const NewBlogPost = (props) => {
             size="lg"
             as="select"
             required
-            value={category}
-            onChange={(e) => setCategory(e.target.value)}>
+            value={blogPost.category}
+            onChange={(e) =>
+              setblogPost({
+                ...blogPost,
+                category: e.target.value
+              })
+            }>
             <option>Categoria 1</option>
             <option>Categoria 2</option>
             <option>Categoria 3</option>
@@ -118,8 +141,13 @@ const NewBlogPost = (props) => {
             size="lg"
             placeholder="3 minuti"
             required
-            value={readTime}
-            onChange={(e) => setReadTime(e.target.value)}
+            value={blogPost.valore}
+            onChange={(e) =>
+              setblogPost({
+                ...blogPost,
+                valore: e.target.value
+              })
+            }
           />
         </Form.Group>
 
@@ -146,6 +174,7 @@ const NewBlogPost = (props) => {
           </Button>
         </Form.Group>
       </Form>
+
     </Container>
   );
 };
