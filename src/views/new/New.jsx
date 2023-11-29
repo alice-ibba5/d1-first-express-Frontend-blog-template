@@ -14,7 +14,7 @@ const NewBlogPost = ({ blogPosts, setblogPosts }) => {
     title: "",
     content: "",
     readTime: {
-      valore: "",
+      value: "",
     },
     author: {
       _id: "",
@@ -30,6 +30,7 @@ const NewBlogPost = ({ blogPosts, setblogPosts }) => {
 
   const handleChange = useCallback((value) => {
     setText(value);
+    console.log(value)
   });
 
   const handleSubmit = async (e) => {
@@ -37,20 +38,16 @@ const NewBlogPost = ({ blogPosts, setblogPosts }) => {
     setLoading(true);
 
     try {
-      let response = await fetch("http://localhost:3000/api/blogPosts", {
+      let response = await fetch("http://localhost:3000/api/blogposts", {
         headers: {
           "Content-Type": "application/json",
         },
         mode: "cors",
         method: "POST",
         body: JSON.stringify(blogPost),
-        // cover,
       })
 
       if (response.ok) {
-        // toast.success("Post aggiunto!", {
-        //  position: toast.POSITION.BOTTOM_RIGHT,
-        //});
         setblogPost({
           category: "",
           title: "",
@@ -63,10 +60,9 @@ const NewBlogPost = ({ blogPosts, setblogPosts }) => {
           },
           createdAt: "",
         })
+        console.log(blogPost)
+
       } else {
-        //toast.error("Something went wrong!", {
-        // position: toast.POSITION.TOP_LEFT,
-        //});
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
 
@@ -142,7 +138,7 @@ const NewBlogPost = ({ blogPosts, setblogPosts }) => {
             size="lg"
             placeholder="3 minuti"
             required
-            value={blogPost.valore}
+            value={blogPost.value}
             onChange={(e) =>
               setblogPost({
                 ...blogPost,
