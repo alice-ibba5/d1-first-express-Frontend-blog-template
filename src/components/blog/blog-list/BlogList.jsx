@@ -1,24 +1,62 @@
 import React from "react";
-import { Col, Row } from "react-bootstrap";
-import posts from "../../../data/posts.json";
+import { useEffect, useState } from "react";
+import { Col, Row, Spinner } from "react-bootstrap";
 import BlogItem from "../blog-item/BlogItem";
 
-const BlogList = props => {
+const BlogList = () => {
+
+  const [posts, setPosts] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const getPosts = async () => {
+      setLoading(true);
+      try {
+        let response = await fetch("http://localhost:3000/api/blogposts",
+          {
+            method: "GET",
+            mode: "cors"
+          }
+        );
+
+        if (response.ok) {
+          let data = await response.json();
+          setPosts(data)
+          setLoading(false);
+        } else {
+          console.log("error");
+          setLoading(false);
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        setLoading(false);
+      }
+    };
+    if (!posts) {
+      getPosts();
+    }
+  }, [posts]);
+
+
+
   return (
     <Row>
-      {posts.map((post, i) => (
-        <Col
-          key={`item-${i}`}
-          md={4}
-          style={{
-            marginBottom: 50,
-          }}
-        >
-          <BlogItem key={post.title} {...post} />
-        </Col>
-      ))}
+      {posts.map(
+        (posts, i) => (
+          <Col
+            key={`item-${i}`}
+            md={4}
+            style={{
+              marginBottom: 50,
+            }}
+          >
+            <BlogItem key={posts.title} {...posts} loading={loading} />
+          </Col>
+        ))}
     </Row>
   );
 };
 
 export default BlogList;
+
+

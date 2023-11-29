@@ -37,10 +37,11 @@ const NewBlogPost = ({ blogPosts, setblogPosts }) => {
     setLoading(true);
 
     try {
-      let response = await fetch("http://localhost:3000/api/blogPosts", { mode: 'cors' }, {
+      let response = await fetch("http://localhost:3000/api/blogPosts", {
         headers: {
           "Content-Type": "application/json",
         },
+        mode: "cors",
         method: "POST",
         body: JSON.stringify(blogPost),
         // cover,
