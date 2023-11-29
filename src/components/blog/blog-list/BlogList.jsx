@@ -32,7 +32,7 @@ const BlogList = () => {
         setLoading(false);
       }
     };
-    if (!posts) {
+    if (posts.length == 0) {
       getPosts();
     }
   }, [posts]);

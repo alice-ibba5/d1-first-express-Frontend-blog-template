@@ -7,26 +7,13 @@ import "./styles.css";
 
 const NewBlogPost = ({ blogPosts, setblogPosts }) => {
   const [text, setText] = useState("");
+  const [blog, setBlog] = useState();
   const [loading, setLoading] = useState(false);
+  const [title, setTitle] = useState("");
+  const [idAuthor, setIdAuthor] = useState("");
+  const [category, setCategory] = useState("");
+  const [readTime, setReadTime] = useState("");
 
-  const [blogPost, setblogPost] = useState({
-    category: "",
-    title: "",
-    content: "",
-    readTime: {
-      value: "",
-    },
-    author: {
-      _id: "",
-    },
-    createdAt: "",
-  });
-
-  useEffect(() => {
-    setblogPost((c) => ({
-      ...c,
-    }));
-  }, []);
 
   const handleChange = useCallback((value) => {
     setText(value);
@@ -36,6 +23,18 @@ const NewBlogPost = ({ blogPosts, setblogPosts }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
+    const formData = {
+      readTime: {
+        value: readTime,
+      },
+      author: {
+        _id: idAuthor,
+      },
+
+      category: category,
+      title: title,
+      content: text,
+    };
 
     try {
       let response = await fetch("http://localhost:3000/api/blogposts", {
@@ -44,23 +43,11 @@ const NewBlogPost = ({ blogPosts, setblogPosts }) => {
         },
         mode: "cors",
         method: "POST",
-        body: JSON.stringify(blogPost),
+        body: JSON.stringify(formData),
       })
 
       if (response.ok) {
-        setblogPost({
-          category: "",
-          title: "",
-          content: "",
-          readTime: {
-            valore: "",
-          },
-          author: {
-            _id: "",
-          },
-          createdAt: "",
-        })
-        console.log(blogPost)
+        setBlog(formData)
 
       } else {
         throw new Error(`HTTP error! Status: ${response.status}`);
@@ -86,13 +73,9 @@ const NewBlogPost = ({ blogPosts, setblogPosts }) => {
             size="lg"
             placeholder="Title"
             required
-            value={blogPost.title}
-            onChange={(e) =>
-              setblogPost({
-                ...blogPost,
-                title: e.target.value
-              })
-            } />
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+          />
         </Form.Group>
 
         <Form.Group controlId="blog-form" className="mt-3">
@@ -101,13 +84,8 @@ const NewBlogPost = ({ blogPosts, setblogPosts }) => {
             size="lg"
             placeholder="2348762397429"
             required
-            value={blogPost._id}
-            onChange={(e) =>
-              setblogPost({
-                ...blogPost,
-                _id: e.target.value
-              })
-            }
+            value={idAuthor}
+            onChange={(e) => setIdAuthor(e.target.value)}
           />
         </Form.Group>
 
@@ -117,13 +95,8 @@ const NewBlogPost = ({ blogPosts, setblogPosts }) => {
             size="lg"
             as="select"
             required
-            value={blogPost.category}
-            onChange={(e) =>
-              setblogPost({
-                ...blogPost,
-                category: e.target.value
-              })
-            }>
+            value={category}
+            onChange={(e) => setCategory(e.target.value)}>
             <option>Categoria 1</option>
             <option>Categoria 2</option>
             <option>Categoria 3</option>
@@ -138,13 +111,8 @@ const NewBlogPost = ({ blogPosts, setblogPosts }) => {
             size="lg"
             placeholder="3 minuti"
             required
-            value={blogPost.value}
-            onChange={(e) =>
-              setblogPost({
-                ...blogPost,
-                valore: e.target.value
-              })
-            }
+            value={readTime}
+            onChange={(e) => setReadTime(e.target.value)}
           />
         </Form.Group>
 
