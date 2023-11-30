@@ -10,7 +10,7 @@ const NewBlogPost = ({ blogPosts, setblogPosts }) => {
   const [blog, setBlog] = useState();
   const [loading, setLoading] = useState(false);
   const [title, setTitle] = useState("");
-  const [idAuthor, setIdAuthor] = useState("");
+  const [author, setAuthor] = useState("");
   const [category, setCategory] = useState("");
   const [readTime, setReadTime] = useState("");
 
@@ -27,10 +27,7 @@ const NewBlogPost = ({ blogPosts, setblogPosts }) => {
       readTime: {
         value: readTime,
       },
-      author: {
-        _id: idAuthor,
-      },
-
+      author: author,
       category: category,
       title: title,
       content: text,
@@ -79,13 +76,13 @@ const NewBlogPost = ({ blogPosts, setblogPosts }) => {
         </Form.Group>
 
         <Form.Group controlId="blog-form" className="mt-3">
-          <Form.Label>ID Authors</Form.Label>
+          <Form.Label>Author</Form.Label>
           <Form.Control
             size="lg"
             placeholder="2348762397429"
             required
-            value={idAuthor}
-            onChange={(e) => setIdAuthor(e.target.value)}
+            value={author}
+            onChange={(e) => setAuthor(e.target.value)}
           />
         </Form.Group>
 
