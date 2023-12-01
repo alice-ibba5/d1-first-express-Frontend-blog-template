@@ -6,8 +6,8 @@ import BlogLike from "../../components/likes/BlogLike";
 import "./styles.css";
 
 const Blog = (props) => {
+  const { author } = props;
   const [blog, setBlog] = useState({});
-  const [posts, setPosts] = useState();
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const { id } = useParams();
@@ -45,7 +45,7 @@ const Blog = (props) => {
 
         <div className="blog-details-container">
           <div className="blog-details-author">
-            <BlogAuthor {...blog.author} />
+            <BlogAuthor {...blog.author} key={author} />
           </div>
           <div className="blog-details-info">
             <div>{blog.createdAt}</div>

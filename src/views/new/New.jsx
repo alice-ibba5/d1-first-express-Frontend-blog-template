@@ -13,6 +13,7 @@ const NewBlogPost = ({ blogPosts, setblogPosts }) => {
   const [author, setAuthor] = useState("");
   const [category, setCategory] = useState("");
   const [readTime, setReadTime] = useState("");
+  const [cover, setCover] = useState("");
 
 
   const handleChange = useCallback((value) => {
@@ -30,6 +31,7 @@ const NewBlogPost = ({ blogPosts, setblogPosts }) => {
       author: author,
       category: category,
       title: title,
+      cover: cover,
       content: text,
     };
 
@@ -45,6 +47,7 @@ const NewBlogPost = ({ blogPosts, setblogPosts }) => {
 
       if (response.ok) {
         setBlog(formData)
+        alert("Blogpost created successfully!")
 
       } else {
         throw new Error(`HTTP error! Status: ${response.status}`);
@@ -76,13 +79,14 @@ const NewBlogPost = ({ blogPosts, setblogPosts }) => {
         </Form.Group>
 
         <Form.Group controlId="blog-form" className="mt-3">
-          <Form.Label>Author</Form.Label>
+          <Form.Label>Author ID</Form.Label>
           <Form.Control
             size="lg"
             placeholder="2348762397429"
             required
             value={author}
             onChange={(e) => setAuthor(e.target.value)}
+
           />
         </Form.Group>
 
@@ -102,15 +106,32 @@ const NewBlogPost = ({ blogPosts, setblogPosts }) => {
           </Form.Control>
         </Form.Group>
 
-        <Form.Group className="mt-3">
-          <Form.Label>Tempo di lettura</Form.Label>
+        <Form.Group controlId="blog-form" className="mt-3">
+          <Form.Label>Cover</Form.Label>
           <Form.Control
             size="lg"
-            placeholder="3 minuti"
+            placeholder="Link to the cover image"
             required
-            value={readTime}
-            onChange={(e) => setReadTime(e.target.value)}
+            value={cover}
+            onChange={(e) => setCover(e.target.value)}
           />
+        </Form.Group>
+
+        <Form.Group className="mt-3">
+          <Form.Label>Tempo di lettura</Form.Label>
+          <div className="d-flex align-items-center">
+            <Form.Control
+              size="lg"
+              placeholder="3"
+              required
+              value={readTime}
+              onChange={(e) => setReadTime(e.target.value)}
+              style={{
+                width: 50,
+              }}
+            />
+            <span className="ms-2">minuti</span>
+          </div>
         </Form.Group>
 
         <Form.Group controlId="blog-content" className="mt-3">
