@@ -12,7 +12,7 @@ const BlogList = () => {
     const getPosts = async () => {
       setLoading(true);
       try {
-        let response = await fetch("http://localhost:3000/api/blogposts",
+        let response = await fetch("http://localhost:3030/api/blogposts",
           {
             method: "GET",
             mode: "cors"

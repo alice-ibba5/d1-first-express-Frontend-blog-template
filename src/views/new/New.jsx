@@ -36,7 +36,7 @@ const NewBlogPost = ({ blogPosts, setblogPosts }) => {
     };
 
     try {
-      let response = await fetch("http://localhost:3000/api/blogposts", {
+      let response = await fetch("http://localhost:3030/api/blogposts", {
         headers: {
           "Content-Type": "application/json",
         },

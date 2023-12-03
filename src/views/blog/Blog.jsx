@@ -1,20 +1,21 @@
 import React, { useEffect, useState } from "react";
-import { Container, Image, Spinner } from "react-bootstrap";
+import { Container, Image, Spinner, Col } from "react-bootstrap";
 import { useNavigate, useParams } from "react-router-dom";
 import BlogAuthor from "../../components/blog/blog-author/BlogAuthor";
 import BlogLike from "../../components/likes/BlogLike";
 import "./styles.css";
 
 const Blog = (props) => {
-  const { author } = props;
+
   const [blog, setBlog] = useState({});
+  const [comments, setComments] = useState({});
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const { id } = useParams();
 
   const getPost = async () => {
     try {
-      const response = await fetch(`http://localhost:3000/api/blogposts/${id}`);
+      const response = await fetch(`http://localhost:3030/api/blogposts/${id}`);
 
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
@@ -33,6 +34,27 @@ const Blog = (props) => {
     getPost();
   }, []);
 
+  const getComments = async () => {
+    try {
+      const response = await fetch(`http://localhost:3030/api/blogposts/${id}/comments`);
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      setComments(data);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    getComments();
+  }, []);
+
   return loading ? (
     <div className="d-flex mt-5">
       <Spinner animation="border" variant="primary" className="mx-auto" />
@@ -45,11 +67,11 @@ const Blog = (props) => {
 
         <div className="blog-details-container">
           <div className="blog-details-author">
-            <BlogAuthor {...blog.author} key={author} />
+            <BlogAuthor {...blog.author} />
           </div>
           <div className="blog-details-info">
             <div>{blog.createdAt}</div>
-            <div>{`lettura da ${blog.readTime.value} ${blog.readTime.unit}`}</div>
+            <div>{`lettura da ${blog.value} ${blog.unit}`}</div>
             <div
               style={{
                 marginTop: 20,
@@ -65,6 +87,16 @@ const Blog = (props) => {
             __html: blog.content,
           }}
         ></div>
+        <h4 className="mt-3">Comments:</h4>
+        {comments.map((comment) =>
+          <Col>
+            <h5 className="mt-2">User:</h5>
+            <span>{`${comment.user}`}</span>
+            <h5 className="mt-2">Comment:</h5>
+            <span>{`${comment.text}`}</span>
+
+          </Col>
+        )}
       </Container>
     </div>
   )
