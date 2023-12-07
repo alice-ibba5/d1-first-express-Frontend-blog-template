@@ -1,5 +1,6 @@
 import React, { useCallback, useState, useEffect } from "react";
 import { Button, Container, Form, Spinner } from "react-bootstrap";
+import { useParams } from "react-router-dom";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import "./styles.css";
@@ -13,8 +14,7 @@ const NewBlogPost = ({ blogPosts, setblogPosts }) => {
   const [author, setAuthor] = useState("");
   const [category, setCategory] = useState("");
   const [readTime, setReadTime] = useState("");
-  const [cover, setCover] = useState("");
-
+  const [file, setFile] = useState(null);
 
   const handleChange = useCallback((value) => {
     setText(value);
@@ -24,39 +24,64 @@ const NewBlogPost = ({ blogPosts, setblogPosts }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    const formData = {
+    const textData = {
       readTime: {
         value: readTime,
       },
       author: author,
       category: category,
       title: title,
-      cover: cover,
       content: text,
     };
 
+    const formData = new FormData();
+    formData.append("cover", file, "cover");
+
     try {
-      let response = await fetch("http://localhost:3030/api/blogposts", {
+      let textResponse = await fetch("http://localhost:3030/api/blogposts", {
         headers: {
           "Content-Type": "application/json",
         },
-        mode: "cors",
         method: "POST",
-        body: JSON.stringify(formData),
-      })
+        body: JSON.stringify(textData),
+      });
 
-      if (response.ok) {
-        setBlog(formData)
-        alert("Blogpost created successfully!")
+      if (textResponse.ok) {
+        setBlog(textData)
 
-      } else {
-        throw new Error(`HTTP error! Status: ${response.status}`);
+
+        const data = await textResponse.json();
+        const { _id } = data;
+
+        const fileResponse = await fetch(`http://localhost:3030/api/blogposts/${_id}/cover`, {
+
+          method: "PATCH",
+          body: formData,
+        });
+
+        if (fileResponse.ok) {
+
+          const fileDataResponse = await fileResponse.json();
+          console.log(fileDataResponse)
+
+          setFile(formData)
+          alert("Blogpost created successfully!")
+
+
+
+        } else {
+          throw new Error(`HTTP error! Status: ${fileResponse.status}`);
+        }
       }
-
     } catch (error) {
       console.log("Error fetching data:", error);
+
+    } finally {
+      setLoading(false);
     }
+    // getPosts();
   };
+
 
 
 
@@ -106,15 +131,14 @@ const NewBlogPost = ({ blogPosts, setblogPosts }) => {
           </Form.Control>
         </Form.Group>
 
-        <Form.Group controlId="blog-form" className="mt-3">
+        <Form.Group className="mt-3">
           <Form.Label>Cover</Form.Label>
-          <Form.Control
-            size="lg"
-            placeholder="Link to the cover image"
-            required
-            value={cover}
-            onChange={(e) => setCover(e.target.value)}
-          />
+          <div>
+            <input type="file"
+              //value={file}
+              multiple={false}
+              onChange={e => setFile(e.target.files[0])} />
+          </div>
         </Form.Group>
 
         <Form.Group className="mt-3">
@@ -152,14 +176,18 @@ const NewBlogPost = ({ blogPosts, setblogPosts }) => {
             style={{
               marginLeft: "1em",
             }}
+
           >
             Invia
           </Button>
         </Form.Group>
       </Form>
 
+
+
     </Container>
   );
-};
+}
+
 
 export default NewBlogPost;

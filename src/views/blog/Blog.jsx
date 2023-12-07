@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Container, Image, Spinner, Col, Table } from "react-bootstrap";
+import { Container, Image, Spinner, Col, Table, Button } from "react-bootstrap";
 import { useNavigate, useParams } from "react-router-dom";
 import BlogAuthor from "../../components/blog/blog-author/BlogAuthor";
 import BlogLike from "../../components/likes/BlogLike";
@@ -12,6 +12,7 @@ const Blog = (props) => {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const { id } = useParams();
+  const [file, setFile] = useState("");
 
   const getPost = async () => {
     try {
@@ -55,6 +56,32 @@ const Blog = (props) => {
     getComments();
   }, []);
 
+  const handleSendPic = async () => {
+
+    const formData = new FormData();
+    formData.append("cover", file, "");
+
+    try {
+      let response = await fetch(`http://localhost:3030/api/blogposts/${id}/cover`, {
+
+        method: "PATCH",
+        body: formData,
+      })
+
+      if (response.ok) {
+
+        const { url } = await response.json();
+        console.log(url)
+
+      } else {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+    } catch (error) {
+      console.log("Error fetching data:", error);
+    }
+  };
+
   return loading ? (
     <div className="d-flex mt-5">
       <Spinner animation="border" variant="primary" className="mx-auto" />
@@ -63,6 +90,20 @@ const Blog = (props) => {
     blog && <div className="blog-details-root">
       <Container>
         <Image className="blog-details-cover" src={blog.cover} fluid />
+        <h5>Modifica la cover:</h5>
+        <input type="file"
+          //value={file}
+          multiple={false}
+          onChange={e => setFile(e.target.files[0])} />
+        <Button
+          type="submit"
+          size="lg"
+          variant="dark"
+          style={{
+            marginLeft: "1em",
+          }}
+          onClick={() => !!file && handleSendPic()}
+        >Invia</Button>
         <h1 className="blog-details-title">{blog.title}</h1>
 
         <div className="blog-details-container">
