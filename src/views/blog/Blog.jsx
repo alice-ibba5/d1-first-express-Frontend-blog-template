@@ -12,7 +12,7 @@ const Blog = (props) => {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const { id } = useParams();
-  const [file, setFile] = useState("");
+  const [file, setFile] = useState(null);
 
   const getPost = async () => {
     try {
@@ -59,22 +59,25 @@ const Blog = (props) => {
   const handleSendPic = async () => {
 
     const formData = new FormData();
-    formData.append("cover", file, "");
+    formData.append("cover", file, "cover");
 
     try {
-      let response = await fetch(`http://localhost:3030/api/blogposts/${id}/cover`, {
+      let fileResponse = await fetch(`http://localhost:3030/api/blogposts/${id}/cover`, {
 
         method: "PATCH",
         body: formData,
       })
 
-      if (response.ok) {
+      if (fileResponse.ok) {
 
-        const { url } = await response.json();
-        console.log(url)
+        const fileDataResponse = await fileResponse.json();
+        console.log(fileDataResponse)
+
+        setFile(formData)
+        alert("Cover changed successfully!")
 
       } else {
-        throw new Error(`HTTP error! Status: ${response.status}`);
+        throw new Error(`HTTP error! Status: ${fileResponse.status}`);
       }
 
     } catch (error) {
