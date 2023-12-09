@@ -138,14 +138,14 @@ const Blog = (props) => {
           <Table striped bordered hover>
             <thead>
               <tr>
-                <th>User</th>
+                <th>Author</th>
                 <th>Comment</th>
               </tr>
             </thead>
             <tbody>
               {comments.map((comment) =>
                 <tr>
-                  <td>{`${comment.user}`}</td>
+                  <td>{`${comment.author.name} ${comment.author.surname}`}</td>
                   <td>{`${comment.text}`}</td>
                 </tr>)}
             </tbody>

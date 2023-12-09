@@ -1,5 +1,5 @@
 import React from "react";
-import { Button, Container, Navbar } from "react-bootstrap";
+import { Button, Container, Navbar, Dropdown } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import logo from "../../assets/logo.png";
 import "./styles.css";
@@ -24,6 +24,19 @@ const NavBar = props => {
           </svg>
           Nuovo Articolo
         </Button>
+
+        <Dropdown>
+          <Dropdown.Toggle variant="dark" id="dropdown-basic">
+            Dropdown Button
+          </Dropdown.Toggle>
+
+          <Dropdown.Menu>
+            <Dropdown.Item href="#/action-1">Action</Dropdown.Item>
+            <Dropdown.Item href="#/action-2">Another action</Dropdown.Item>
+            <Dropdown.Item href="#/action-3">Something else</Dropdown.Item>
+          </Dropdown.Menu>
+        </Dropdown>
+
       </Container>
     </Navbar>
   );
